@@ -1,0 +1,1 @@
+wsl -d CENTOS7 --cd ~ -e bash -c "source atlas/setup_for_ds_finder.sh; ds_finder --scope mc16_13TeV files mc16_13TeV.311426.MGPy8EG_A14NNPDF23_NNPDF31ME_HSS_LLP_mH1000_mS275_ltlow.deriv.DAOD_EXOT15.e7357_s3234_r9364_p4696"
