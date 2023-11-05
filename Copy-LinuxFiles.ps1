@@ -76,4 +76,3 @@ wsl -d $DistroName bash -c "openssl x509 -in ~/.globus/usercert_noText.pem -text
 wsl -d $DistroName rm ~/.globus/usercert_noText.pem
 wsl -d $DistroName chmod 444 ~/.globus/usercert.pem
 wsl -d $DistroName chmod 400 ~/.globus/userkey.pem
- 
