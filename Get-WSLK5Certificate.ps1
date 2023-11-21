@@ -29,25 +29,28 @@ The first time you run this, you'll be prompted for your username at the command
 it will be pulled from the Windows Credential Manager.
 
 #>
-param(
-    [Parameter(Mandatory = $true)]
-    [string]$WSLInstance,
-    [Parameter(Mandatory = $true)]
-    [string]$Username,
-    [string]$SSOLookupName = "CERN.CH"
-)
+function Get-WSLK5Certificate {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$WSLInstance,
+        [Parameter(Mandatory = $true)]
+        [string]$Username,
+        [string]$SSOLookupName = "CERN.CH"
+    )
 
-# Grab the secure credential modeul from the Windows Vault.
-$password = BetterCredentials\Get-Credential -Store -inline -UserName $Username -Domain $SSOLookupName
+    # Grab the secure credential modeul from the Windows Vault.
+    $password = BetterCredentials\Get-Credential -Store -inline -UserName $Username -Domain $SSOLookupName
 
-# Get the Domain\Username and convert them go USERNAME@DOMAIN.
-$DomainUsername = $password.UserName
-$parts = $DomainUsername.Split('\')
-$K5User = $parts[1] + "@" + $parts[0]
+    # Get the Domain\Username and convert them go USERNAME@DOMAIN.
+    $DomainUsername = $password.UserName
+    $parts = $DomainUsername.Split('\')
+    $K5User = $parts[1] + "@" + $parts[0]
 
-# Get the plaintext password for a moment.
-$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password.Password)
-$PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+    # Get the plaintext password for a moment.
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password.Password)
+    $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
-# Now, invoke it.
-wsl -d $WSLInstance bash -c "echo $PlainPassword | kinit $K5User"
+    # Now, invoke it.
+    wsl -d $WSLInstance bash -c "echo $PlainPassword | kinit $K5User"
+}
